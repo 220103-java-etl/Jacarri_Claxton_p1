@@ -1,6 +1,7 @@
 package Repository;
 
-import Models.Role;
+
+
 import Models.User;
 import Util.ConnectionUtil;
 
@@ -10,80 +11,30 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 
-public class UserDAO implements GenericDAO<User>{
 
+public class UserDAO {
 
-    ConnectionUtil cu = ConnectionUtil.getConnectionUtil();
-    @Override
-    public User add(User user) {
-        String sql = "insert into users values (default, ?, ?, ?, ?, ?, default, ?) returning *";
-        try(Connection conn = cu.getConnection()) {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1,user.getfName());
-            ps.setString(2,user.getlName());
-            ps.setString(3,user.getUsername());
-            ps.setString(4,user.getPassword());
-            ps.setString(5,user.getEmail());
-            ps.setString(6,user.getRole().toString());
-            ResultSet rs = ps.executeQuery();
-            if(rs.next()) {
-                User u = new User(
-                        rs.getInt("id"),
-                        rs.getString("first_name"),
-                        rs.getString("last_name"),
-                        rs.getString("email"),
-                        rs.getString("username"),
-                        rs.getString("pass"),
-                        rs.getString("role"
-                        ));
-                return u;
-            }
-        } catch(SQLException e) {
-            e.printStackTrace();
-        }
-        return user;
-    };
+    static ConnectionUtil cu = ConnectionUtil.getConnectionUtil();
 
-
-    @Override
-    public User getById(Integer id) {
-        String sql = "select * from users where id = ?";
-        try(Connection conn = cu.getConnection()) {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, id);
-            ResultSet rs = ps.executeQuery();
-        if (rs.next()) {
-            User u = new User(
-                    rs.getInt("id"),
-                    rs.getString("first_name"),
-                    rs.getString("last_name"),
-                    rs.getString("email"),
-                    rs.getString("username"),
-                    rs.getString("pass"),
-                    rs.getString("role"
-            ));
-        }
-    } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-    public User getByUsername(String username) {
-        String sql = "select * from users where username = ?";
+    /**
+     * Should retrieve a User from the DB with the corresponding username or an empty optional if there is no match.
+     */
+    public static User getByUsername(String username) {
+        String sql = "select * from employee where username = ?";
         try (Connection conn = cu.getConnection()) {
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, "username");
+            ps.setString(1, username);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 User u = new User(
                         rs.getInt("id"),
-                        rs.getString("first_name"),
-                        rs.getString("last_name"),
-                        rs.getString("email"),
+                        rs.getString("firstName"),
+                        rs.getString("lastName"),
                         rs.getString("username"),
                         rs.getString("password"),
+                        rs.getString("email"),
                         rs.getString("role")
                 );
                 return u;
@@ -92,97 +43,98 @@ public class UserDAO implements GenericDAO<User>{
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
+        return null;
     }
 
-        @Override
-        public void update(User user) {
-            String sql = "update workspace set first_name = ?, last_name = ?, username = ?, pass = ?, email = ?, where id = ?";
-            try(Connection conn = cu.getConnection()) {
-                PreparedStatement ps = conn.prepareStatement(sql);
-                ps.setString(1,User.getfName());
-                ps.setString(2,User.getlName());
-                ps.setString(3,User.getUsername());
-                ps.setString(4,User.getPassword());
-                ps.setString(5,User.getEmail());
-                ps.setInt(7,User.getId());
-                ps.executeUpdate();
-            } catch(SQLException e) {
-                e.printStackTrace();
-            }
-
-        }
-        }
-
-    @Override
-    public List<User> getAll() {
-        {
-            String sql = "select * from workspace";
-            List<User> users = new ArrayList<>();
-            try (Connection conn = cu.getConnection()) {
-                PreparedStatement ps = conn.prepareStatement(sql);
-                ResultSet rs = ps.executeQuery();
-                while (rs.next()) {
-                    User a = new User(
-                            rs.getInt("id"),
-                            rs.getString("first_name"),
-                            rs.getString("last_name"),
-                            rs.getString("email"),
-                            rs.getString("username"),
-                            rs.getString("password"),
-                            rs.getString("role")
-                    );
-                    users.add(a);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
+    public static List<User> getAllUsers() {
+        List<User> users = new ArrayList<>();
+        String sql = "select * from employee    ";
+        try (Connection conn = cu.getConnection()) {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                User u = new User(
+                        rs.getInt("id"),
+                        rs.getString("firstName"),
+                        rs.getString("lastName"),
+                        rs.getString("username"),
+                        rs.getString("password"),
+                        rs.getString("email"),
+                        rs.getString("role")
+                );
+                users.add(u);
             }
             return users;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * <ul>
+     *     <li>Should Insert a new User record into the DB with the provided information.</li>
+     *     <li>Should throw an exception if the creation is unsuccessful.</li>
+     *     <li>Should return a User object with an updated ID.</li>
+     * </ul>
+     * <p>
+     * Note: The userToBeRegistered will have an id=0, and username and password will not be null.
+     * Additional fields may be null.
+     */
+    public static User add(User user) {
+        String sql = "insert into employee values (default, ?, ?, ?, ?, ?) returning *";
+        try (Connection conn = cu.getConnection()) {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, user.getFirstName());
+            ps.setString(2, user.getLastName());
+            ps.setString(3, user.getUsername());
+            ps.setString(4, user.getPassword());
+            ps.setString(5, user.getEmail());
+            ps.setString(6, user.getRole());
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                User u = new User(
+                        rs.getInt("id"),
+                        rs.getString("firstName"),
+                        rs.getString("lastName"),
+                        rs.getString("username"),
+                        rs.getString("password"),
+                        rs.getString("email"),
+                        rs.getString("email")
+                );
+                return u;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void update(User user) {
+        String sql = "update users set first_name = ?, last_name = ?, username = ?, pass = ?, email = ?, funds = ? where id = ?";
+        try (Connection conn = cu.getConnection()) {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, user.getFirstName());
+            ps.setString(2, user.getLastName());
+            ps.setString(3, user.getUsername());
+            ps.setString(4, user.getPassword());
+            ps.setString(5, user.getEmail());
+            ps.setInt(6, user.getId());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+
         }
     }
 
-    @Override
-    public void update(User user) {
-        String sql = "update users set first_name = ?, last_name = ?, username = ?, pass = ?, email = ?, funds = ? where id = ?";
+    public void delete(Integer id) {
+        String sql = "delete from users where id = ?";
         try(Connection conn = cu.getConnection()) {
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1,User.getfName());
-            ps.setString(2,User.getlName());
-            ps.setString(3,User.getUsername());
-            ps.setString(4,User.getPassword());
-            ps.setString(5,User.getEmail());
-            ps.setInt(7,User.getId());
+            ps.setInt(1,id);
             ps.executeUpdate();
         } catch(SQLException e) {
             e.printStackTrace();
         }
-
     }
-
-
-
-    @Override
-    public void delete(Integer id) {
-        String sql = "delete from users where id = ?";
-            try(Connection conn = cu.getConnection()) {
-                PreparedStatement ps = conn.prepareStatement(sql);
-                ps.setInt(1,id);
-                ps.executeUpdate();
-            } catch(SQLException e) {
-                e.printStackTrace();
-            }
-
-    }
-
-    @Override
-    public void create(User employee_to_register) {
-
-    }
-
-
-    public static User add() {
-        return null;
-    }
-
-
 }

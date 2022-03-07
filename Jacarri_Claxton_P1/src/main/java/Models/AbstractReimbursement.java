@@ -24,18 +24,27 @@ public class AbstractReimbursement {
     private int id;
     private String status;
     private User author;
-    private String resolver;
+    private User resolver;
     private double amount;
-    private String username;
+    private String date;
+    private String time;
+    private String location;
+    private String description;
+    private String justify;
 
-    public AbstractReimbursement(int id, String username, String status, double amount, String resolver) {
-        super();
+    public AbstractReimbursement(int id, String status, User author, User resolver, double amount, String date, String time, String location, String description, String justify) {
         this.id = id;
-        this.username = username;
         this.status = status;
+        this.author = author;
+        this.resolver = resolver;
         this.amount = amount;
-        this.resolver = resolver
+        this.date = date;
+        this.time = time;
+        this.location = location;
+        this.description = description;
+        this.justify = justify;
     }
+
 
     public int getId() {
         return id;
@@ -45,7 +54,7 @@ public class AbstractReimbursement {
         this.id = id;
     }
 
-    public Status getStatus() {
+    public String getStatus() {
         return status;
     }
 
@@ -66,7 +75,7 @@ public class AbstractReimbursement {
     }
 
     public void setResolver(User resolver) {
-        this.resolver = String.valueOf(resolver);
+        this.resolver = resolver;
     }
 
     public double getAmount() {
@@ -75,6 +84,46 @@ public class AbstractReimbursement {
 
     public void setAmount(double amount) {
         this.amount = amount;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getJustify() {
+        return justify;
+    }
+
+    public void setJustify(String justify) {
+        this.justify = justify;
     }
 
     @Override

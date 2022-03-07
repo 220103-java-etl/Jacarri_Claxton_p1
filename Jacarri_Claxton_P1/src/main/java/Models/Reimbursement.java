@@ -1,4 +1,8 @@
-package Models;
+package com.revature.models;
+
+import Models.AbstractReimbursement;
+import Models.Status;
+import Models.User;
 
 /**
  * This concrete Reimbursement class can include additional fields that can be used for
@@ -20,10 +24,10 @@ public class Reimbursement extends AbstractReimbursement {
     }
 
     /**
-     * This includes the minimum parameters needed for the {@link .models.AbstractReimbursement} class.
+     * This includes the minimum parameters needed for the {@link com.revature.models.AbstractReimbursement} class.
      * If other fields are needed, please create additional constructors.
      */
-    public Reimbursement(int id, String username, String status, double amount, String resolver) {
-        super(id, username, status, amount, resolver);
+    public Reimbursement(int id, Status status, User author, User resolver, double amount, String date, String time, String location, String description, String justify) {
+        super(id, status, author, resolver, amount, date, time, location, description, justify);
     }
 }

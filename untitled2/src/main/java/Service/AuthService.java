@@ -21,21 +21,6 @@ import java.util.Optional;
  */
 public class AuthService {
 
-
-    public class AuthorService {
-
-        UserDAO userDAO = new UserDAO();
-
-        public List<User> getAll() {
-            return userDAO.getAll();
-        }
-
-        public User getById(int userId) {
-            return userDAO.getById(userId);
-        }
-
-        ObjectMapper objectMapper = new ObjectMapper();
-
         /**
          * <ul>
          *     <li>Needs to check for existing users with username/email provided.</li>
@@ -46,7 +31,7 @@ public class AuthService {
          * </ul>
          */
         public User login(String username, String password) {
-            return userDAO.getById(1);
+            return null;
         }
 
         /**
@@ -75,4 +60,3 @@ public class AuthService {
             return Optional.empty();
         }
     }
-}
